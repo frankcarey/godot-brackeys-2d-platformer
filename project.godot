@@ -14,6 +14,10 @@ config/name="godot-brackeys-2d-platformer"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 
+[autoload]
+
+Music="*res://scenes/music.tscn"
+
 [dotnet]
 
 project/assembly_name="godot-brackeys-2d-platformer"
