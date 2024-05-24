@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://cj57ug6mbqnia"]
+
+[ext_resource type="Script" path="res://scripts/mobile_ui.gd" id="1_dvb0a"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_aulna"]
+[ext_resource type="PackedScene" uid="uid://cri8vps2atg8n" path="res://scenes/jump_button.tscn" id="3_cdtaa"]
+
+[node name="MobileUI" type="CanvasLayer"]
+script = ExtResource("1_dvb0a")
+
+[node name="Virtual joystick left" parent="." instance=ExtResource("2_aulna")]
+joystick_mode = 2
+visibility_mode = 1
+action_left = "move_left"
+action_right = "move_right"
+
+[node name="Jump Button" parent="." instance=ExtResource("3_cdtaa")]

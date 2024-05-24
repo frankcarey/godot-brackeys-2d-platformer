@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cri8vps2atg8n"]
+
+[ext_resource type="Script" path="res://scripts/jump_button.gd" id="1_molv2"]
+[ext_resource type="Texture2D" uid="uid://bkvmydfn5saxg" path="res://addons/virtual_joystick/textures/joystick_tip.png" id="1_po5mk"]
+
+[node name="Jump Button" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_molv2")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 987.0
+offset_top = 462.0
+offset_right = 1087.0
+offset_bottom = 562.0
+texture = ExtResource("1_po5mk")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
