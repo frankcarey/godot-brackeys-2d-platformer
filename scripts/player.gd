@@ -30,6 +30,7 @@ func _ready():
 func kill():
 	state = State.DEAD
 	audio_stream_player_2d.stream = hurt_sound
+	audio_stream_player_2d.volume_db = 0
 	audio_stream_player_2d.play()
 	print("you died")
 	Engine.time_scale = 0.25
@@ -47,6 +48,9 @@ func _process(delta):
 func jump():
 	if is_on_floor():
 		state = State.JUMP
+		audio_stream_player_2d.stream = jump_sound
+		audio_stream_player_2d.volume_db = -8
+		audio_stream_player_2d.play()
 
 func drop():
 	if is_on_floor():
