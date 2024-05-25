@@ -5,6 +5,7 @@ const SPEED = 130.0
 const JUMP_VELOCITY = -200.0
 const ACCEL = 1000. # this accelerates to about full after 4 squares.
 const JUMP_BOOST_MULT = -1. # this approximately doubles the jump height with 130 speed.
+const DRAG = 700.
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -36,7 +37,7 @@ func kill():
 	animation_player.speed_scale = 4
 	
 	audio_stream_player_2d.stream = hurt_sound
-	audio_stream_player_2d.volume_db = 0
+	audio_stream_player_2d.volume_db = 0 # full volume
 	audio_stream_player_2d.play()
 	
 	print("you died")
@@ -56,14 +57,14 @@ func jump():
 	if is_on_floor():
 		state = State.JUMP
 		audio_stream_player_2d.stream = jump_sound
-		audio_stream_player_2d.volume_db = -8
+		audio_stream_player_2d.volume_db = -8 # lower volume
 		audio_stream_player_2d.play()
 
 func drop():
 	if is_on_floor():
 		state = State.DROP
 		audio_stream_player_2d.stream = drop_sound
-		audio_stream_player_2d.volume_db = -8
+		audio_stream_player_2d.volume_db = -8 # lower volume
 		audio_stream_player_2d.play()
 
 func _physics_process(delta):
@@ -101,7 +102,7 @@ func _physics_process(delta):
 		var speed_limiter = abs(direction)**2 + SPEED
 		velocity.x = clampf(velocity.x + (direction * ACCEL * delta), -speed_limiter, speed_limiter)
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, DRAG * delta)
 
 	move_and_slide()
 	
