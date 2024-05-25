@@ -43,7 +43,8 @@ func _physics_process(delta):
 		animated_sprite_2d.play("jump")
 	
 	if direction:
-		velocity.x = clampf(velocity.x + (direction * ACCEL * delta), -SPEED, SPEED)
+		var speed_limiter = abs(direction)**2 + SPEED
+		velocity.x = clampf(velocity.x + (direction * ACCEL * delta), -speed_limiter, speed_limiter)
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
