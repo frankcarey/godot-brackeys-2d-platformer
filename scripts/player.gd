@@ -11,6 +11,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 @export var hurt_sound: AudioStream
 @export var jump_sound: AudioStream
+@export var drop_sound: AudioStream
 
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
 @onready var animated_sprite_2d = $AnimatedSprite2D
@@ -55,6 +56,9 @@ func jump():
 func drop():
 	if is_on_floor():
 		state = State.DROP
+		audio_stream_player_2d.stream = drop_sound
+		audio_stream_player_2d.volume_db = -8
+		audio_stream_player_2d.play()
 
 func _physics_process(delta):
 	# Add the gravity.

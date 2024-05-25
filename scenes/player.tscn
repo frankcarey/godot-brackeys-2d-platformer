@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=3 uid="uid://cejaomeid6b2r"]
+[gd_scene load_steps=29 format=3 uid="uid://cejaomeid6b2r"]
 
 [ext_resource type="Texture2D" uid="uid://b60swos3i2ugd" path="res://assets/sprites/knight.png" id="1_3nnpc"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_x1eqw"]
 [ext_resource type="AudioStream" uid="uid://bfflnp1dj1lsc" path="res://assets/sounds/hurt.wav" id="3_01xhe"]
 [ext_resource type="AudioStream" uid="uid://denbacwn1qxp5" path="res://assets/sounds/jump.wav" id="3_m7g42"]
+[ext_resource type="AudioStream" uid="uid://d3pjsa821mwhe" path="res://assets/sounds/tap.wav" id="4_bm62b"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x8onx"]
 atlas = ExtResource("1_3nnpc")
@@ -178,6 +179,7 @@ collision_layer = 2
 script = ExtResource("1_x1eqw")
 hurt_sound = ExtResource("3_01xhe")
 jump_sound = ExtResource("3_m7g42")
+drop_sound = ExtResource("4_bm62b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
