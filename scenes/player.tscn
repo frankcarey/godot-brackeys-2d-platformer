@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cejaomeid6b2r"]
+[gd_scene load_steps=31 format=3 uid="uid://cejaomeid6b2r"]
 
 [ext_resource type="Texture2D" uid="uid://b60swos3i2ugd" path="res://assets/sprites/knight.png" id="1_3nnpc"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_x1eqw"]
@@ -174,6 +174,28 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_pcknt"]
 radius = 5.0
 
+[sub_resource type="Animation" id="Animation_k4lxu"]
+resource_name = "hurt"
+length = 0.2
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.996078), Color(1, 0.0156863, 0, 0.996078)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0c8d2"]
+_data = {
+"hurt": SubResource("Animation_k4lxu")
+}
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_x1eqw")
@@ -182,9 +204,10 @@ jump_sound = ExtResource("3_m7g42")
 drop_sound = ExtResource("4_bm62b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+self_modulate = Color(1, 1, 1, 0.996078)
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_c37bh")
-animation = &"jump"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -197,5 +220,10 @@ bus = &"SFX"
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0c8d2")
+}
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

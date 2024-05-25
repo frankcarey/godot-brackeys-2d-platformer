@@ -16,6 +16,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
 @onready var animated_sprite_2d = $AnimatedSprite2D
 @onready var restart_timer = $Timer
+@onready var animation_player = $AnimationPlayer
 
 enum State {
 	DEAD,
@@ -30,9 +31,14 @@ func _ready():
 
 func kill():
 	state = State.DEAD
+	
+	animation_player.play("hurt")
+	animation_player.speed_scale = 4
+	
 	audio_stream_player_2d.stream = hurt_sound
 	audio_stream_player_2d.volume_db = 0
 	audio_stream_player_2d.play()
+	
 	print("you died")
 	Engine.time_scale = 0.25
 	$CollisionShape2D.queue_free()
