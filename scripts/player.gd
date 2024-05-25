@@ -9,12 +9,42 @@ const JUMP_BOOST_MULT = -1. # this approximately doubles the jump height with 13
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
+@export var hurt_sound: AudioStream
+@export var jump_sound: AudioStream
+
+@onready var audio_stream_player_2d = $AudioStreamPlayer2D
 @onready var animated_sprite_2d = $AnimatedSprite2D
+@onready var restart_timer = $Timer
+
+enum State {
+	DEAD,
+	ALIVE
+}
+var state: State
+
+func _ready():
+	state = State.ALIVE
+
+func kill():
+	state = State.DEAD
+	audio_stream_player_2d.stream = hurt_sound
+	audio_stream_player_2d.play()
+	print("you died")
+	Engine.time_scale = 0.25
+	$CollisionShape2D.queue_free()
+	restart_timer.start()
+	
 
 func _physics_process(delta):
 	# Add the gravity.
-	if not is_on_floor():
+	
+	if state == State.DEAD:
+		velocity.y += gravity * delta * 4
+		move_and_slide()
+		return
+	elif not is_on_floor():
 		velocity.y += gravity * delta
+
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -49,3 +79,9 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
 	move_and_slide()
+	
+
+func _on_timer_timeout():
+	# Restarts the game.
+	Engine.time_scale = 1.0
+	get_tree().reload_current_scene()
