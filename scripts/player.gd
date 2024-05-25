@@ -103,16 +103,19 @@ func _physics_process(delta):
 		animated_sprite_2d.flip_h = true
 	
 	
-	var tile_material = get_floor_material()
-	print(tile_material)
-	var stickiness = 1
-	if tile_material == "ice":
-		stickiness = 0
+
+	var stickiness = 0.8
+	if not is_on_floor():
+		stickiness = 0.3
+	else:
+		var tile_material = get_floor_material()
+		if tile_material == "ice":
+			stickiness = 0.1
 
 	# direction is between -1 and +1 based on the controller value.
 	if direction:
 		var speed_limiter = abs(direction)**4 + SPEED
-		velocity.x = clampf(velocity.x + (direction * ACCEL * delta), -speed_limiter, speed_limiter)
+		velocity.x = clampf(velocity.x + (direction * ACCEL * delta * stickiness), -speed_limiter, speed_limiter)
 	else:
 		velocity.x = move_toward(velocity.x, 0, DRAG * delta * stickiness)
 
