@@ -18,12 +18,14 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 enum State {
 	DEAD,
-	ALIVE
+	IDLE,
+	JUMP,
+	DROP
 }
 var state: State
 
 func _ready():
-	state = State.ALIVE
+	state = State.IDLE
 
 func kill():
 	state = State.DEAD
@@ -33,31 +35,40 @@ func kill():
 	Engine.time_scale = 0.25
 	$CollisionShape2D.queue_free()
 	restart_timer.start()
-	
+
+func _process(delta):	
+	if Input.is_action_just_pressed("jump"):
+		if Input.is_action_pressed("ui_down"):
+			drop()
+		else:
+			jump()
+			
+
+func jump():
+	if is_on_floor():
+		state = State.JUMP
+
+func drop():
+	if is_on_floor():
+		state = State.DROP
 
 func _physics_process(delta):
 	# Add the gravity.
-	
-	if state == State.DEAD:
-		velocity.y += gravity * delta * 4
-		move_and_slide()
-		return
-	elif not is_on_floor():
+	if not is_on_floor():
 		velocity.y += gravity * delta
-
-
-	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		# Drop below one-way platforms.
-		if Input.is_action_pressed("ui_down") and is_on_floor():
+	match state:
+		State.DROP:
 			position.y += 1
-		else:
+			state = State.IDLE
+		State.JUMP:
 			velocity.y = JUMP_VELOCITY + (abs(velocity.x) * JUMP_BOOST_MULT)
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction = Input.get_axis("move_left", "move_right")
+			state = State.IDLE
+		State.DEAD:
+			velocity.y += gravity * delta * 3
 	
+	
+	# HANDLE MOVEMENT INPUT (LEFT/RIGHT)
+	var direction = Input.get_axis("move_left", "move_right")
 	if direction > 0:
 		animated_sprite_2d.flip_h = false
 	elif direction < 0:
