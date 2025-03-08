@@ -220,6 +220,7 @@ bus = &"SFX"
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.2
+one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
