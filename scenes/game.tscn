@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cp6cyk78qtdh3"]
+[gd_scene load_steps=12 format=3 uid="uid://cp6cyk78qtdh3"]
 
 [ext_resource type="PackedScene" uid="uid://cejaomeid6b2r" path="res://scenes/player.tscn" id="1_oruor"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_ygbum"]
 [ext_resource type="Texture2D" uid="uid://dbpb78panf2r" path="res://assets/sprites/world_tileset.png" id="2_4r6th"]
 [ext_resource type="PackedScene" uid="uid://bvacmbmiqp4xb" path="res://levels/level_1.tscn" id="5_ptfh1"]
+[ext_resource type="FontFile" uid="uid://pdeiu1qs3nb" path="res://assets/fonts/PixelOperator8.ttf" id="6_fmuh8"]
 [ext_resource type="Theme" uid="uid://r0puolyhat1i" path="res://scenes/game_theme.tres" id="6_j8oyg"]
 [ext_resource type="PackedScene" uid="uid://cj57ug6mbqnia" path="res://scenes/mobile_ui.tscn" id="8_k1riy"]
 
@@ -140,6 +141,28 @@ texture = ExtResource("2_4r6th")
 [sub_resource type="TileSet" id="TileSet_nu2uq"]
 sources/0 = SubResource("TileSetAtlasSource_xnw50")
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_onokl"]
+particles_animation = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vyl6r"]
+bg_color = Color(1, 1, 1, 0.823529)
+skew = Vector2(0.25, 0)
+border_width_left = 30
+border_width_top = 20
+border_width_right = 35
+border_width_bottom = 20
+corner_radius_top_left = 60
+corner_radius_top_right = 30
+corner_radius_bottom_right = 125
+corner_radius_bottom_left = 55
+expand_margin_left = 105.0
+expand_margin_top = 45.0
+expand_margin_right = 120.0
+expand_margin_bottom = 20.0
+
 [node name="Game" type="Node2D"]
 
 [node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("level", "player", "timer_label", "score_label", "death_label")]
@@ -151,6 +174,7 @@ player = NodePath("../Player")
 timer_label = NodePath("../CanvasLayer/Timer")
 score_label = NodePath("../CanvasLayer/Coins")
 death_label = NodePath("../CanvasLayer/Deaths")
+coins_gathered = null
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 scale = Vector2(0.9, 0.9)
@@ -183,12 +207,42 @@ drag_vertical_offset = -0.27
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="CanvasLayer2" type="CanvasLayer" parent="CanvasLayer"]
+follow_viewport_enabled = true
+
+[node name="Project Description" type="Label" parent="CanvasLayer/CanvasLayer2"]
+material = SubResource("CanvasItemMaterial_onokl")
+offset_left = -124.0
+offset_top = -220.0
+offset_right = 1331.0
+offset_bottom = 631.0
+scale = Vector2(0.077, 0.093)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.131869, 0.131869, 0.131869, 0.792157)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("6_fmuh8")
+theme_override_font_sizes/font_size = 33
+theme_override_styles/normal = SubResource("StyleBoxFlat_vyl6r")
+text = "Velit ornare dictumst ultrices purus gravida habitasse. Convallis scelerisque tempor facilisis nam, quisque amet porta fringilla. Integer elementum dapibus fermentum sit fames, non eget malesuada ultricies massa. Commodo suscipit placerat nisi vitae cursus congue. Donec aliquet lectus morbi luctus pharetra lobortis ac. Dictumst sem sagittis gravida pulvinar facilisi diam, lectus ornare senectus. Ut tristique interdum auctor quis cras volutpat vestibulum. Aliquam varius molestie sociosqu netus aptent, cursus convallis id taciti.
+
+Aenean pretium fusce lacinia cubilia viverra gravida justo dignissim. Metus etiam ultrices diam venenatis dis blandit. Tincidunt pharetra quam bibendum maecenas ultricies netus felis donec. Orci laoreet rhoncus aenean nec pharetra curabitur. Cras nullam scelerisque convallis massa eget nisi montes. Leo a fermentum at augue, congue donec. Magna id arcu eros sagittis dignissim mollis pharetra. Sit nunc mus mauris pharetra lectus faucibus, natoque purus vestibulum."
+horizontal_alignment = 1
+autowrap_mode = 3
+
 [node name="Coins" type="Label" parent="CanvasLayer"]
 offset_left = 864.0
 offset_top = 74.0
 offset_right = 1053.0
 offset_bottom = 97.0
 theme = ExtResource("6_j8oyg")
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
 text = "Coins: 3/20"
 
 [node name="Timer" type="Label" parent="CanvasLayer"]
@@ -197,6 +251,10 @@ offset_top = 27.0
 offset_right = 1129.0
 offset_bottom = 50.0
 theme = ExtResource("6_j8oyg")
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
 text = "Time: 00:01:00"
 
 [node name="Deaths" type="Label" parent="CanvasLayer"]
@@ -205,4 +263,8 @@ offset_top = 120.0
 offset_right = 904.0
 offset_bottom = 143.0
 theme = ExtResource("6_j8oyg")
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
 text = "Deaths: 0"

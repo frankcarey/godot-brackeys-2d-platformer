@@ -83,6 +83,10 @@ func _on_player_died(_p: Node2D):
     # Restart the game
     restart_from_last_checkpoint()
 
+func _on_checkbox_button_toggled(pressed: bool):
+    pass
+
+
 func restart_from_last_checkpoint():
     print("Restarting from last checkpoint")
 
