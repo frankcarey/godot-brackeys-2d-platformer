@@ -22,10 +22,11 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var animated_sprite_2d = $AnimatedSprite2D
 @onready var restart_timer = $Timer
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 enum State {
-    DEAD,
-    IDLE,
+    DEAD = 0,
+    IDLE = 1,
 }
 var state: State
 
@@ -35,19 +36,26 @@ func _ready():
 
 func spawn(pos = Vector2(0, 0)):
     print("spawning player")
-    state = State.IDLE
+
+    process_mode = PROCESS_MODE_INHERIT
+    collision_shape_2d.disabled = false
     position = pos
     velocity = Vector2.ZERO
     velocity.y = 0
     velocity.x = 0
+    animation_player.stop()
 
-
-
-    $CollisionShape2D.process_mode = CollisionShape2D.PROCESS_MODE_INHERIT
+    await get_tree().process_frame
+    position.y = position.y - 0.1
+    print("back to IDLE")
+    state = State.IDLE
 
 
 func kill():
+    if state == State.DEAD:
+        return
     state = State.DEAD
+    await get_tree().process_frame
 
     animation_player.play("hurt")
     animation_player.speed_scale = 4
@@ -55,17 +63,17 @@ func kill():
     audio_stream_player_2d.stream = hurt_sound
     audio_stream_player_2d.volume_db = 0 # full volume
     audio_stream_player_2d.play()
+    collision_shape_2d.disabled = true
 
     print("you died")
     Engine.time_scale = 0.25
-    $CollisionShape2D.process_mode = CollisionShape2D.PROCESS_MODE_DISABLED
     restart_timer.start()
 
 func _on_timer_timeout():
     animation_player.speed_scale = 1
     Engine.time_scale = 1
     animation_player.stop()
-    $CollisionShape2D.process_mode = CollisionShape2D.PROCESS_MODE_INHERIT
+    process_mode = PROCESS_MODE_DISABLED
     player_died.emit(self)
 
 func handle_input():
@@ -147,5 +155,3 @@ func _physics_process(delta):
         velocity.x = move_toward(velocity.x, 0, DRAG * delta * stickiness)
 
     move_and_slide()
-
-

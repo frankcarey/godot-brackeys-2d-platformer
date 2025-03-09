@@ -3,12 +3,18 @@ extends Node
 @export var level_resource: PackedScene
 @export var level: Node2D
 @export var player: Node2D
+@export var timer_label: Label
+@export var score_label: Label
+@export var death_label: Label
 
 @export var coins_gathered: Array[String] = []
 
 @onready var last_spawn_location = Vector2(30, -100)
 
+var init = false
 var score = 0
+var total_coins = 0
+var deaths = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -18,24 +24,41 @@ func _ready():
         return
     else:
         player.connect("player_died", _on_player_died)
-    restart_from_last_checkpoint()
+
+func _process(delta):
+    if not init:
+        restart_from_last_checkpoint()
+        init = true
+    # Update the timer label in format "Time: 0.000s"
+    timer_label.text = "Time: " + "%8.1f" % (Time.get_ticks_msec() / 1000.0) + "s"
+
+
+func update_score():
+    # Update the score label
+    score_label.text = "Coins:" + str(score) + "/" + str(total_coins)
 
 func add_point():
     score += 1
-    print(score)
+    # Update the score label
+    update_score()
 
 func get_coins():
     # Get the game manager node from the scene tree
     var coins = get_tree().get_nodes_in_group("coins")
     print("coins: ", coins.size())
+    score = 0
+    total_coins = 0
     for coin in coins:
         print(coin.name)
+        total_coins += 1
         if coin.name in coins_gathered:
             coin.queue_free()
+            score += 1
             continue
         print(coin.name + " not in coins_gathered")
         coin.coin_collected.connect(_on_coin_collected)
-        score += 1
+    update_score()
+
 
 func _on_coin_collected(coin: Node2D):
     print("Coin collected: ", coin.name)
@@ -50,11 +73,13 @@ func gather_coin(coin: Node2D):
     # Add the coin to the list of gathered coins
     coins_gathered.append(coin.name)
 
-    # Remove the coin from the scene
-    coin.queue_free()
+    # Add a point to the score
+    add_point()
 
 func _on_player_died(_p: Node2D):
     print("Player died")
+    deaths += 1
+    death_label.text = "Deaths: " + str(deaths)
     # Restart the game
     restart_from_last_checkpoint()
 
@@ -65,6 +90,8 @@ func restart_from_last_checkpoint():
     if level_resource == null:
         print("Level resource is not set.")
         return
+
+    await player.spawn(last_spawn_location)
 
     # Restarts the game.
     Engine.time_scale = 1.0
@@ -79,5 +106,3 @@ func restart_from_last_checkpoint():
     print("Level loaded")
 
     get_coins()
-
-    player.spawn(last_spawn_location)

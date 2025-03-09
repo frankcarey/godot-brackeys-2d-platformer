@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://cp6cyk78qtdh3"]
+[gd_scene load_steps=9 format=3 uid="uid://cp6cyk78qtdh3"]
 
 [ext_resource type="PackedScene" uid="uid://cejaomeid6b2r" path="res://scenes/player.tscn" id="1_oruor"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_ygbum"]
 [ext_resource type="Texture2D" uid="uid://dbpb78panf2r" path="res://assets/sprites/world_tileset.png" id="2_4r6th"]
 [ext_resource type="PackedScene" uid="uid://bvacmbmiqp4xb" path="res://levels/level_1.tscn" id="5_ptfh1"]
+[ext_resource type="Theme" uid="uid://r0puolyhat1i" path="res://scenes/game_theme.tres" id="6_j8oyg"]
 [ext_resource type="PackedScene" uid="uid://cj57ug6mbqnia" path="res://scenes/mobile_ui.tscn" id="8_k1riy"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xnw50"]
@@ -141,12 +142,15 @@ sources/0 = SubResource("TileSetAtlasSource_xnw50")
 
 [node name="Game" type="Node2D"]
 
-[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("level", "player")]
+[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("level", "player", "timer_label", "score_label", "death_label")]
 unique_name_in_owner = true
 script = ExtResource("1_ygbum")
 level_resource = ExtResource("5_ptfh1")
 level = NodePath("../Level")
 player = NodePath("../Player")
+timer_label = NodePath("../CanvasLayer/Timer")
+score_label = NodePath("../CanvasLayer/Coins")
+death_label = NodePath("../CanvasLayer/Deaths")
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 scale = Vector2(0.9, 0.9)
@@ -176,3 +180,29 @@ drag_vertical_offset = -0.27
 [node name="MobileUI" parent="." instance=ExtResource("8_k1riy")]
 
 [node name="Level" parent="." instance=ExtResource("5_ptfh1")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Coins" type="Label" parent="CanvasLayer"]
+offset_left = 864.0
+offset_top = 74.0
+offset_right = 1053.0
+offset_bottom = 97.0
+theme = ExtResource("6_j8oyg")
+text = "Coins: 3/20"
+
+[node name="Timer" type="Label" parent="CanvasLayer"]
+offset_left = 864.0
+offset_top = 27.0
+offset_right = 1129.0
+offset_bottom = 50.0
+theme = ExtResource("6_j8oyg")
+text = "Time: 00:01:00"
+
+[node name="Deaths" type="Label" parent="CanvasLayer"]
+offset_left = 864.0
+offset_top = 120.0
+offset_right = 904.0
+offset_bottom = 143.0
+theme = ExtResource("6_j8oyg")
+text = "Deaths: 0"
